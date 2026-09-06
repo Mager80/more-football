@@ -1,0 +1,406 @@
+<meta charset="UTF-8">
+<title>More Football — движок матча</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --paper:#F1F4F8; --surface:#FFFFFF; --ink:#14181F; --muted:#55606E; --line:#D7DEE7;
+    --accent:#1D5FA6; --accent-soft:#E4EDF7; --pitch:#2F6B4F; --pitch-soft:#E3EEE8;
+    --gold:#8C6423; --gold-soft:#F5ECDC; --bad:#A5432D; --bad-soft:#F6E7E2;
+    --weak:#A5432D; --weak-soft:#F6E7E2;
+    --shadow:0 1px 2px rgba(20,24,31,.07);
+    --font-display:'Big Shoulders Display','Oswald','Arial Narrow',sans-serif;
+    --font-body:'Source Serif 4','Georgia',serif;
+    --font-mono:'IBM Plex Mono','SFMono-Regular',Consolas,monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#0F131A; --surface:#161C26; --ink:#E7ECF2; --muted:#93A0B2; --line:#2A3342;
+      --accent:#6FA8E8; --accent-soft:#1C2938; --pitch:#63B78A; --pitch-soft:#182620;
+      --gold:#D8AD6C; --gold-soft:#2A2013; --bad:#E28568; --bad-soft:#2E1B15;
+      --weak:#E28568; --weak-soft:#2E1B15;
+      --shadow:0 1px 2px rgba(0,0,0,.5);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#0F131A; --surface:#161C26; --ink:#E7ECF2; --muted:#93A0B2; --line:#2A3342;
+    --accent:#6FA8E8; --accent-soft:#1C2938; --pitch:#63B78A; --pitch-soft:#182620;
+    --gold:#D8AD6C; --gold-soft:#2A2013; --bad:#E28568; --bad-soft:#2E1B15;
+    --weak:#E28568; --weak-soft:#2E1B15;
+    --shadow:0 1px 2px rgba(0,0,0,.5);
+  }
+  *{box-sizing:border-box;}
+  body{background:var(--paper);color:var(--ink);font-family:var(--font-body);line-height:1.5;-webkit-font-smoothing:antialiased;}
+  .nav{
+    display:flex;align-items:center;gap:22px;padding:16px 24px;border-bottom:1px solid var(--line);
+    font-family:var(--font-mono);font-size:.82rem;background:var(--surface);
+  }
+  .nav .brand{font-family:var(--font-display);font-weight:800;font-size:1.05rem;color:var(--ink);margin-right:auto;letter-spacing:.01em;}
+  .nav a{color:var(--muted);text-decoration:none;}
+  .nav a:hover{color:var(--accent);}
+  .nav a.current{color:var(--accent);font-weight:600;}
+
+  .wrap{max-width:960px;margin:0 auto;padding:48px 24px 80px;}
+  .eyebrow{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--pitch);display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+  .eyebrow::before{content:"";width:22px;height:2px;background:var(--pitch);display:inline-block;}
+  h1{font-family:var(--font-display);font-weight:800;font-size:clamp(1.8rem,4vw,2.4rem);line-height:1.02;margin:0 0 10px;text-wrap:balance;}
+  .lede{color:var(--muted);max-width:66ch;margin:0 0 36px;font-size:1.02rem;text-wrap:balance;}
+
+  .setup{display:grid;grid-template-columns:1fr auto 1fr;gap:20px;align-items:stretch;margin-bottom:28px;}
+  @media (max-width:760px){.setup{grid-template-columns:1fr;}.vs{display:none;}}
+  .team-card{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:20px;box-shadow:var(--shadow);}
+  .team-card h2{font-family:var(--font-display);font-weight:700;font-size:1.3rem;margin:0 0 4px;}
+  .team-card .club-line{font-family:var(--font-mono);font-size:.72rem;color:var(--muted);margin-bottom:16px;}
+  .vs{display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:800;font-size:1.4rem;color:var(--muted);}
+
+  .tactic-row{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
+  .tactic-btn{
+    font-family:var(--font-mono);font-size:.82rem;text-align:left;
+    padding:10px 12px;border-radius:4px;border:1px solid var(--line);background:var(--paper);color:var(--ink);
+    cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:8px;
+  }
+  .tactic-btn:hover{border-color:var(--accent);}
+  .tactic-btn.active{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:600;}
+  .tactic-btn .beats{font-size:.68rem;color:var(--muted);font-weight:400;}
+  .tactic-btn.active .beats{color:var(--accent);}
+
+  .zone-table{width:100%;border-collapse:collapse;font-family:var(--font-mono);font-size:.76rem;margin-top:12px;padding-top:12px;border-top:1px dashed var(--line);}
+  .zone-table th{font-weight:500;color:var(--muted);text-align:center;padding:2px 4px 6px;font-size:.66rem;text-transform:uppercase;letter-spacing:.04em;}
+  .zone-table th:first-child{text-align:left;}
+  .zone-table td{text-align:center;padding:3px 4px;font-variant-numeric:tabular-nums;border-top:1px solid var(--line);}
+  .zone-table td:first-child{text-align:left;color:var(--muted);}
+  .zone-table td.weak{color:var(--weak);font-weight:700;background:var(--weak-soft);border-radius:3px;}
+  .zone-table td.strong{color:var(--pitch);font-weight:700;}
+
+  .controls{display:flex;flex-wrap:wrap;align-items:center;gap:14px;justify-content:center;margin-bottom:8px;}
+  button.play{
+    font-family:var(--font-display);font-weight:700;font-size:1.05rem;letter-spacing:.01em;
+    background:var(--pitch);color:#fff;border:none;padding:12px 26px;border-radius:4px;cursor:pointer;
+  }
+  button.play:disabled{background:var(--line);color:var(--muted);cursor:not-allowed;}
+  button.play:not(:disabled):hover{filter:brightness(1.08);}
+  .scoreboard{font-family:var(--font-mono);font-size:1rem;color:var(--muted);text-align:center;}
+  .scoreboard b{font-family:var(--font-display);font-size:1.6rem;color:var(--ink);font-variant-numeric:tabular-nums;margin:0 6px;}
+
+  .matchup-note{
+    text-align:center;font-family:var(--font-mono);font-size:.8rem;color:var(--pitch);
+    min-height:1.4em;margin:14px 0 20px;
+  }
+
+  .halftime-panel{
+    display:none;background:var(--gold-soft);border:1px solid var(--gold);border-left:3px solid var(--gold);
+    border-radius:4px;padding:16px 18px;margin-bottom:20px;
+  }
+  .halftime-panel.show{display:block;}
+  .halftime-panel h3{font-family:var(--font-display);font-weight:700;font-size:1.02rem;margin:0 0 10px;color:var(--ink);}
+  .swap-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  @media (max-width:600px){.swap-grid{grid-template-columns:1fr;}}
+  .swap-team{font-family:var(--font-mono);font-size:.78rem;}
+  .swap-team .tname{font-weight:600;color:var(--ink);margin-bottom:6px;}
+  .swap-btn{
+    display:block;width:100%;text-align:left;background:var(--surface);border:1px solid var(--line);
+    border-radius:3px;padding:7px 10px;margin-bottom:6px;cursor:pointer;font-family:var(--font-mono);font-size:.76rem;color:var(--ink);
+  }
+  .swap-btn:hover{border-color:var(--gold);}
+  .swap-btn .arrow{color:var(--gold);margin:0 4px;}
+
+  .log{background:var(--surface);border:1px solid var(--line);border-radius:6px;overflow:hidden;box-shadow:var(--shadow);}
+  .log-empty{padding:40px 20px;text-align:center;color:var(--muted);font-size:.94rem;}
+  .phase-divider{
+    background:var(--pitch-soft);color:var(--pitch);font-family:var(--font-mono);font-size:.7rem;
+    letter-spacing:.1em;text-transform:uppercase;padding:8px 16px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  }
+  .phase-divider:first-child{border-top:none;}
+  .event-row{display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid var(--line);font-size:.92rem;}
+  .event-row:last-child{border-bottom:none;}
+  .event-chip{
+    font-family:var(--font-mono);font-size:.66rem;font-weight:600;letter-spacing:.04em;
+    padding:2px 8px;border-radius:10px;flex-shrink:0;min-width:52px;text-align:center;
+  }
+  .chip-goal{background:var(--gold-soft);color:var(--gold);}
+  .chip-chance{background:var(--accent-soft);color:var(--accent);}
+  .chip-card{background:var(--bad-soft);color:var(--bad);}
+  .chip-ht,.chip-ft{background:var(--pitch-soft);color:var(--pitch);}
+  .event-text b{color:var(--ink);}
+  .event-text{color:var(--muted);}
+  .zone-tag{font-family:var(--font-mono);font-size:.72rem;color:var(--muted);}
+
+  footer{margin-top:32px;font-size:.9rem;color:var(--muted);}
+  footer a{color:var(--muted);}
+</style>
+
+<nav class="nav">
+  <span class="brand">More Football</span>
+  <a href="index.html">Главная</a>
+  <a href="roadmap.html">Концепция</a>
+  <a href="player-card-sample.html">Карточка</a>
+  <a href="match-engine-prototype.html" class="current">Движок матча</a>
+</nav>
+
+<div class="wrap">
+  <div class="eyebrow">Прототип · Phase 0 дорожной карты</div>
+  <h1>Движок одного матча</h1>
+  <p class="lede">Тактика задаёт общее преимущество, но каждый момент разыгрывается по конкретной зоне — левый фланг, центр или правый — против зеркальной зоны обороны соперника. Слабый фланг видно в таблице ниже и можно закрыть перестановкой в перерыве.</p>
+
+  <div class="setup">
+    <div class="team-card" id="teamA-card">
+      <h2>Maardu LM</h2>
+      <div class="club-line">Esiliiga · включает реальную карточку Tsõmbaljuk (ПЗ, справа)</div>
+      <div class="tactic-row" data-team="A"></div>
+      <table class="zone-table" id="teamA-zones"></table>
+    </div>
+    <div class="vs">VS</div>
+    <div class="team-card" id="teamB-card">
+      <h2>Соперник (тест)</h2>
+      <div class="club-line">Условный состав · слабый правый защитник</div>
+      <div class="tactic-row" data-team="B"></div>
+      <table class="zone-table" id="teamB-zones"></table>
+    </div>
+  </div>
+
+  <div class="matchup-note" id="matchup-note"></div>
+
+  <div class="halftime-panel" id="halftime-panel">
+    <h3>Перерыв: перестановки по флангам</h3>
+    <div class="swap-grid">
+      <div class="swap-team">
+        <div class="tname">Maardu LM</div>
+        <div id="swap-A"></div>
+      </div>
+      <div class="swap-team">
+        <div class="tname">Соперник (тест)</div>
+        <div id="swap-B"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="play" id="btn-play">Начать матч — 1-й тайм</button>
+    <div class="scoreboard" id="scoreboard">— : —</div>
+  </div>
+
+  <div class="log" id="log">
+    <div class="log-empty">Выберите тактики обеих команд и нажмите «Начать матч».</div>
+  </div>
+
+  <footer>Числа и формулы — рабочие, для проверки ощущений от механики, не финальный баланс. См. <a href="roadmap.html">roadmap.html</a> и <a href="player-card.html">player-card.html</a> в этом же проекте.</footer>
+</div>
+
+<script>
+const TACTICS = {
+  press:      { label: "Прессинг",   beats: "possession" },
+  possession: { label: "Владение",   beats: "counter" },
+  counter:    { label: "Контратаки", beats: "press" },
+};
+const ZONES = ["left","center","right"];
+const ZONE_LABEL = { left: "Левый фланг", center: "Центр", right: "Правый фланг" };
+const MIRROR = { left: "right", center: "center", right: "left" };
+
+function player(pas,fiz,teh,sko,atk,obr,name){ return {pas,fiz,teh,sko,atk,obr,name}; }
+
+const teamA = {
+  name: "Maardu LM",
+  gk: player(40,66,38,30,10,68,"Вратарь A"),
+  def: { left: player(45,62,48,40,30,64,"Защитник A-Л"), center: player(44,60,47,39,29,62,"Защитник A-Ц"), right: player(43,61,46,38,28,63,"Защитник A-П") },
+  mid: { left: player(52,55,53,48,44,48,"Полузащитник A-Л"), center: player(55,58,54,50,46,50,"Полузащитник A-Ц"), right: player(70,68,64,62,58,55,"Tsõmbaljuk") },
+  fwd: { left: player(45,55,52,60,62,28,"Нападающий A-Л"), center: player(46,56,53,60,63,28,"Нападающий A-Ц"), right: player(44,54,50,58,60,26,"Нападающий A-П") },
+};
+
+const teamB = {
+  name: "Соперник (тест)",
+  gk: player(38,64,36,30,10,64,"Вратарь B"),
+  def: { left: player(44,63,46,40,30,62,"Защитник B-Л"), center: player(42,60,44,38,28,60,"Защитник B-Ц"), right: player(30,42,32,26,18,40,"Защитник B-П (слабый)") },
+  mid: { left: player(56,54,56,50,48,44,"Полузащитник B-Л"), center: player(60,58,58,54,50,46,"Полузащитник B-Ц"), right: player(52,56,50,48,44,46,"Полузащитник B-П") },
+  fwd: { left: player(44,54,50,58,60,26,"Нападающий B-Л"), center: player(46,56,53,62,64,28,"Нападающий B-Ц"), right: player(42,52,48,56,58,24,"Нападающий B-П") },
+};
+
+function zv(p, k1, k2){ return (p[k1]+p[k2])/2; }
+function defZoneVal(team, z){ return zv(team.def[z], "obr","fiz"); }
+function midZoneVal(team, z){ return zv(team.mid[z], "pas","teh"); }
+function fwdZoneVal(team, z){ return zv(team.fwd[z], "atk","sko"); }
+
+function tacticEdge(tA, tB){
+  if (tA === tB) return 0;
+  if (TACTICS[tA].beats === tB) return 1;
+  if (TACTICS[tB].beats === tA) return -1;
+  return 0;
+}
+function tacticMult(edge, forAttack){
+  if (forAttack) return edge > 0 ? 1.10 : edge < 0 ? 0.96 : 1.0;
+  return edge < 0 ? 0.94 : edge > 0 ? 1.02 : 1.0;
+}
+
+let state = { tacticA: "press", tacticB: "possession", phase: 0, score: {A:0,B:0} };
+
+function renderTacticButtons(){
+  ["A","B"].forEach(team => {
+    const row = document.querySelector(`.tactic-row[data-team="${team}"]`);
+    row.innerHTML = "";
+    Object.entries(TACTICS).forEach(([key, t]) => {
+      const btn = document.createElement("button");
+      btn.className = "tactic-btn" + ((team==="A"?state.tacticA:state.tacticB)===key ? " active" : "");
+      btn.innerHTML = `<span>${t.label}</span><span class="beats">бьёт ${TACTICS[t.beats].label.toLowerCase()}</span>`;
+      btn.onclick = () => {
+        if (team==="A") state.tacticA = key; else state.tacticB = key;
+        renderTacticButtons();
+        renderMatchupNote();
+      };
+      row.appendChild(btn);
+    });
+  });
+}
+
+function zoneCell(val, opponentVal){
+  const cls = val <= opponentVal - 12 ? "weak" : val >= opponentVal + 12 ? "strong" : "";
+  return `<td class="${cls}">${val.toFixed(0)}</td>`;
+}
+
+function renderZoneTable(team, opp, elId){
+  const rows = [
+    { label: "Атака", get: z => fwdZoneVal(team, z), oppGet: z => defZoneVal(opp, MIRROR[z]) },
+    { label: "Полузащита", get: z => midZoneVal(team, z), oppGet: z => midZoneVal(opp, MIRROR[z]) },
+    { label: "Оборона", get: z => defZoneVal(team, z), oppGet: z => fwdZoneVal(opp, MIRROR[z]) },
+  ];
+  let html = `<tr><th></th><th>Л</th><th>Ц</th><th>П</th></tr>`;
+  rows.forEach(r => {
+    html += `<tr><td>${r.label}</td>` + ZONES.map(z => zoneCell(r.get(z), r.oppGet(z))).join("") + `</tr>`;
+  });
+  document.getElementById(elId).innerHTML = html;
+}
+
+function renderZones(){
+  renderZoneTable(teamA, teamB, "teamA-zones");
+  renderZoneTable(teamB, teamA, "teamB-zones");
+}
+
+function renderMatchupNote(){
+  const edge = tacticEdge(state.tacticA, state.tacticB);
+  const note = document.getElementById("matchup-note");
+  if (edge === 0) note.textContent = "Тактики не контрят друг друга напрямую — общего преимущества от стиля нет, решают зоны и составы.";
+  else if (edge === 1) note.textContent = `${TACTICS[state.tacticA].label} у Maardu контрит ${TACTICS[state.tacticB].label.toLowerCase()} соперника — общее атакующее преимущество Maardu.`;
+  else note.textContent = `${TACTICS[state.tacticB].label} соперника контрит ${TACTICS[state.tacticA].label.toLowerCase()} Maardu — общее атакующее преимущество соперника.`;
+}
+
+function addLogPhaseDivider(text){
+  const log = document.getElementById("log");
+  const div = document.createElement("div");
+  div.className = "phase-divider";
+  div.textContent = text;
+  log.appendChild(div);
+}
+function addLogEvent(chipClass, chipText, html){
+  const log = document.getElementById("log");
+  const row = document.createElement("div");
+  row.className = "event-row";
+  row.innerHTML = `<span class="event-chip ${chipClass}">${chipText}</span><span class="event-text">${html}</span>`;
+  log.appendChild(row);
+}
+
+function weightedZonePick(attTeam, defTeam){
+  const weights = ZONES.map(z => Math.max(5, fwdZoneVal(attTeam,z) - defZoneVal(defTeam, MIRROR[z]) + 40));
+  const total = weights.reduce((a,b)=>a+b,0);
+  let r = Math.random()*total;
+  for (let i=0;i<ZONES.length;i++){ r -= weights[i]; if (r<=0) return ZONES[i]; }
+  return ZONES[ZONES.length-1];
+}
+
+function weightedPlayerPick(p1, p2){
+  const w1 = p1.atk+p1.sko, w2 = p2.atk+p2.sko;
+  return Math.random()*(w1+w2) < w1 ? p1 : p2;
+}
+
+function simulatePhase(phaseLabel){
+  addLogPhaseDivider(phaseLabel);
+  const edge = tacticEdge(state.tacticA, state.tacticB);
+
+  [ {att:teamA, def:teamB, attEdge:edge, key:"A"},
+    {att:teamB, def:teamA, attEdge:-edge, key:"B"} ]
+  .forEach(side => {
+    const attMult = tacticMult(side.attEdge, true);
+    const defMult = tacticMult(side.attEdge, false);
+    const gk = zv(side.def.gk, "obr","fiz");
+
+    const globalRatio = (0.5*avgZones(v=>fwdZoneVal(side.att,v)) + 0.5*avgZones(v=>midZoneVal(side.att,v)))*attMult
+                       - (0.6*avgZones(v=>defZoneVal(side.def,v)) + 0.4*gk)*defMult;
+    const baseChances = Math.max(0.3, Math.min(4, 1.6 + globalRatio/22));
+    const chances = Math.max(0, Math.round(baseChances + (Math.random()-0.5)*1.4));
+
+    for (let i=0;i<chances;i++){
+      const zone = weightedZonePick(side.att, side.def);
+      const dZone = MIRROR[zone];
+      const attVal = (0.6*fwdZoneVal(side.att,zone) + 0.4*midZoneVal(side.att,zone)) * attMult;
+      const defVal = defZoneVal(side.def, dZone) * defMult;
+      const localRatio = attVal - defVal - gk*0.15;
+      const goalChance = Math.max(0.05, Math.min(0.45, 0.15 + localRatio/230));
+
+      const scorer = weightedPlayerPick(side.att.fwd[zone], side.att.mid[zone]);
+      const teamLabel = side.att.name;
+      const zoneLabel = ZONE_LABEL[zone];
+      if (Math.random() < goalChance){
+        state.score[side.key]++;
+        addLogEvent("chip-goal","ГОЛ", `<span class="zone-tag">${zoneLabel}</span> <b>${teamLabel}</b> — гол забивает <b>${scorer.name}</b>. Счёт ${state.score.A}:${state.score.B}.`);
+      } else {
+        addLogEvent("chip-chance","МОМЕНТ", `<span class="zone-tag">${zoneLabel}</span> <b>${teamLabel}</b> создаёт момент через ${scorer.name}, но без гола.`);
+      }
+    }
+    if (Math.random() < 0.14){
+      const zone = ZONES[Math.floor(Math.random()*3)];
+      addLogEvent("chip-card","ЖК", `Жёлтая карточка: <b>${side.def.name}</b>, ${side.def.def[zone].name}.`);
+    }
+  });
+
+  updateScoreboard();
+}
+
+function avgZones(fn){ return (fn("left")+fn("center")+fn("right"))/3; }
+
+function updateScoreboard(){
+  document.getElementById("scoreboard").innerHTML = `${teamA.name} <b>${state.score.A} : ${state.score.B}</b> ${teamB.name}`;
+}
+
+function swapFlanks(team, line){
+  const l = team[line].left, r = team[line].right;
+  team[line].left = r; team[line].right = l;
+  renderZones();
+  renderSwapPanel();
+}
+
+function renderSwapPanel(){
+  ["A","B"].forEach(key => {
+    const team = key==="A" ? teamA : teamB;
+    const el = document.getElementById("swap-"+key);
+    el.innerHTML = "";
+    [["def","Оборона"],["mid","Полузащита"],["fwd","Атака"]].forEach(([line,label]) => {
+      const btn = document.createElement("button");
+      btn.className = "swap-btn";
+      btn.innerHTML = `${label}: ${team[line].left.name} <span class="arrow">⇄</span> ${team[line].right.name}`;
+      btn.onclick = () => swapFlanks(team, line);
+      el.appendChild(btn);
+    });
+  });
+}
+
+document.getElementById("btn-play").addEventListener("click", () => {
+  const btn = document.getElementById("btn-play");
+  const ht = document.getElementById("halftime-panel");
+  if (state.phase === 0){
+    document.getElementById("log").innerHTML = "";
+    simulatePhase("1-й тайм");
+    addLogEvent("chip-ht","ПЕРЕРЫВ", `Перерыв. Счёт ${state.score.A}:${state.score.B}. Можно сменить тактику и переставить фланги ниже.`);
+    state.phase = 1;
+    btn.textContent = "Играть 2-й тайм";
+    renderSwapPanel();
+    ht.classList.add("show");
+  } else {
+    simulatePhase("2-й тайм");
+    addLogEvent("chip-ft","ФИНИШ", `Финальный свисток: ${teamA.name} ${state.score.A}:${state.score.B} ${teamB.name}.`);
+    btn.disabled = true;
+    btn.textContent = "Матч завершён";
+    ht.classList.remove("show");
+  }
+});
+
+renderTacticButtons();
+renderZones();
+renderMatchupNote();
+updateScoreboard();
+</script>

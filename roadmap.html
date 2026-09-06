@@ -1,0 +1,494 @@
+<meta charset="UTF-8">
+<title>More Football — концепция</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --paper:#F1F4F8;
+    --surface:#FFFFFF;
+    --ink:#14181F;
+    --muted:#55606E;
+    --line:#D7DEE7;
+    --accent:#1D5FA6;
+    --accent-soft:#E4EDF7;
+    --pitch:#2F6B4F;
+    --pitch-soft:#E3EEE8;
+    --gold:#8C6423;
+    --gold-soft:#F5ECDC;
+    --shadow:0 1px 2px rgba(20,24,31,.07);
+
+    --font-display:'Big Shoulders Display','Oswald','Arial Narrow',sans-serif;
+    --font-body:'Source Serif 4','Georgia',serif;
+    --font-mono:'IBM Plex Mono','SFMono-Regular',Consolas,monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#0F131A;
+      --surface:#161C26;
+      --ink:#E7ECF2;
+      --muted:#93A0B2;
+      --line:#2A3342;
+      --accent:#6FA8E8;
+      --accent-soft:#1C2938;
+      --pitch:#63B78A;
+      --pitch-soft:#182620;
+      --gold:#D8AD6C;
+      --gold-soft:#2A2013;
+      --shadow:0 1px 2px rgba(0,0,0,.5);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#0F131A;
+    --surface:#161C26;
+    --ink:#E7ECF2;
+    --muted:#93A0B2;
+    --line:#2A3342;
+    --accent:#6FA8E8;
+    --accent-soft:#1C2938;
+    --pitch:#63B78A;
+    --pitch-soft:#182620;
+    --gold:#D8AD6C;
+    --gold-soft:#2A2013;
+    --shadow:0 1px 2px rgba(0,0,0,.5);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--font-body);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--accent-soft);}
+  a{color:var(--accent);}
+  a:focus-visible, button:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+
+  .nav{
+    display:flex;align-items:center;gap:22px;padding:16px 24px;border-bottom:1px solid var(--line);
+    font-family:var(--font-mono);font-size:.82rem;background:var(--surface);
+  }
+  .nav .brand{font-family:var(--font-display);font-weight:800;font-size:1.05rem;color:var(--ink);margin-right:auto;letter-spacing:.01em;}
+  .nav a{color:var(--muted);text-decoration:none;}
+  .nav a:hover{color:var(--accent);}
+  .nav a.current{color:var(--accent);font-weight:600;}
+
+  .wrap{max-width:1040px;margin:0 auto;padding:0 24px 96px;}
+
+  /* ---------- cover ---------- */
+  .cover{padding:64px 0 40px;border-bottom:1px solid var(--line);}
+  .eyebrow{
+    font-family:var(--font-mono);
+    font-size:.72rem;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--pitch);
+    display:flex;align-items:center;gap:10px;
+    margin-bottom:18px;
+  }
+  .eyebrow::before{content:"";width:22px;height:2px;background:var(--pitch);display:inline-block;}
+  h1.title{
+    font-family:var(--font-display);
+    font-weight:800;
+    font-size:clamp(2.6rem,6vw,4.4rem);
+    line-height:.98;
+    letter-spacing:.005em;
+    margin:0 0 16px;
+    text-wrap:balance;
+    color:var(--ink);
+  }
+  .subtitle{
+    font-size:1.18rem;
+    color:var(--muted);
+    max-width:56ch;
+    margin:0 0 28px;
+    text-wrap:balance;
+  }
+  .meta-row{
+    display:flex;flex-wrap:wrap;gap:28px;
+    font-family:var(--font-mono);
+    font-size:.82rem;
+  }
+  .meta-item{display:flex;flex-direction:column;gap:4px;}
+  .meta-item span:first-child{color:var(--muted);letter-spacing:.06em;text-transform:uppercase;font-size:.68rem;}
+  .meta-item span:last-child{color:var(--ink);}
+
+  /* ---------- layout ---------- */
+  .page{display:grid;grid-template-columns:200px minmax(0,720px);gap:56px;justify-content:center;padding-top:48px;}
+  @media (max-width:920px){
+    .page{grid-template-columns:minmax(0,1fr);}
+    .toc{display:none;}
+  }
+
+  .toc{position:sticky;top:28px;align-self:start;font-family:var(--font-mono);font-size:.78rem;}
+  .toc-label{color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-size:.68rem;margin-bottom:14px;}
+  .toc ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px;border-left:1px solid var(--line);}
+  .toc a{display:block;padding:2px 0 2px 14px;color:var(--muted);text-decoration:none;border-left:2px solid transparent;margin-left:-1px;}
+  .toc a:hover{color:var(--ink);border-left-color:var(--accent);}
+
+  main{min-width:0;}
+  section{padding:44px 0;border-bottom:1px solid var(--line);}
+  section:last-of-type{border-bottom:none;}
+
+  .sec-eyebrow{
+    font-family:var(--font-mono);
+    font-size:.74rem;
+    color:var(--accent);
+    letter-spacing:.08em;
+    margin:0 0 8px;
+  }
+  h2{
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:1.9rem;
+    letter-spacing:.01em;
+    margin:0 0 18px;
+    text-wrap:balance;
+  }
+  h3{
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:1.15rem;
+    letter-spacing:.01em;
+    margin:0 0 8px;
+  }
+  p{margin:0 0 14px;max-width:62ch;}
+  ul{margin:0 0 14px;padding-left:1.2em;max-width:62ch;}
+  li{margin-bottom:8px;}
+  li::marker{color:var(--pitch);}
+  strong{color:var(--ink);font-weight:700;}
+  .muted{color:var(--muted);}
+  em.term{font-style:italic;color:var(--muted);}
+
+  /* ---------- callout (single bold moment) ---------- */
+  .callout{
+    background:var(--gold-soft);
+    border:1px solid var(--gold);
+    border-left:4px solid var(--gold);
+    border-radius:2px;
+    padding:32px 36px;
+    margin:8px 0 22px;
+  }
+  .callout .quote{
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:1.7rem;
+    color:var(--ink);
+    margin:0 0 12px;
+    text-wrap:balance;
+  }
+  .callout p{margin:0;max-width:60ch;color:var(--ink);}
+  .callout p + p{margin-top:10px;}
+
+  /* ---------- table ---------- */
+  .table-scroll{overflow-x:auto;margin-bottom:8px;}
+  table{border-collapse:collapse;width:100%;min-width:520px;font-size:.92rem;}
+  th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);}
+  th{font-family:var(--font-mono);font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:500;}
+  td{font-variant-numeric:tabular-nums;}
+  tr:last-child td{border-bottom:none;}
+
+  /* ---------- cards ---------- */
+  .card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:8px;}
+  @media (max-width:680px){.card-grid{grid-template-columns:1fr;}}
+  .card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:3px;
+    padding:20px;
+    box-shadow:var(--shadow);
+  }
+  .card .tag{
+    font-family:var(--font-mono);
+    font-size:.68rem;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    color:var(--pitch);
+    margin-bottom:10px;
+    display:block;
+  }
+  .card p{font-size:.94rem;margin:0;max-width:none;}
+
+  /* ---------- flow diagram ---------- */
+  .flow{
+    display:flex;align-items:stretch;flex-wrap:wrap;gap:0;
+    margin:8px 0 20px;
+  }
+  .flow-step{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:3px;
+    padding:14px 16px;
+    min-width:120px;
+    flex:1 1 120px;
+  }
+  .flow-step .k{font-family:var(--font-mono);font-size:.66rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:4px;}
+  .flow-step .v{font-family:var(--font-display);font-weight:700;font-size:1rem;}
+  .flow-arrow{
+    display:flex;align-items:center;justify-content:center;
+    color:var(--pitch);
+    font-family:var(--font-mono);
+    padding:0 8px;
+    flex:0 0 auto;
+  }
+  @media (max-width:600px){
+    .flow{flex-direction:column;}
+    .flow-arrow{transform:rotate(90deg);padding:4px 0;}
+  }
+
+  /* ---------- roadmap ---------- */
+  .roadmap{list-style:none;margin:0;padding:0;position:relative;}
+  .roadmap::before{
+    content:"";position:absolute;left:17px;top:6px;bottom:6px;width:1px;background:var(--line);
+  }
+  .roadmap li{
+    display:grid;grid-template-columns:36px 1fr;gap:18px;
+    margin-bottom:26px;position:relative;
+  }
+  .roadmap li:last-child{margin-bottom:0;}
+  .rm-badge{
+    width:36px;height:36px;border-radius:50%;
+    background:var(--surface);border:1px solid var(--pitch);
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--font-mono);font-weight:600;color:var(--pitch);
+    font-size:.82rem;z-index:1;
+  }
+  .rm-body .status{
+    font-family:var(--font-mono);font-size:.66rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);
+  }
+
+  .glossary{
+    font-family:var(--font-mono);
+    font-size:.84rem;
+    color:var(--muted);
+    border-top:1px dashed var(--line);
+    padding-top:14px;
+    margin-top:6px;
+  }
+  .glossary b{color:var(--ink);font-weight:600;}
+
+  footer{
+    padding:40px 0 0;
+    color:var(--muted);
+    font-size:.9rem;
+  }
+  footer .next{
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:1.3rem;
+    color:var(--ink);
+    margin-bottom:6px;
+    text-wrap:balance;
+  }
+</style>
+
+<nav class="nav">
+  <span class="brand">More Football</span>
+  <a href="index.html">Главная</a>
+  <a href="roadmap.html" class="current">Концепция</a>
+  <a href="player-card-sample.html">Карточка</a>
+  <a href="match-engine-prototype.html">Движок матча</a>
+</nav>
+
+<div class="wrap">
+
+  <header class="cover">
+    <div class="eyebrow">Игровая концепция · до реализации</div>
+    <h1 class="title">More Football</h1>
+    <p class="subtitle">Мультиплеерный футбольный менеджер на данных реальных игроков чемпионата Эстонии — лиг, до которых официальные футбольные игры никогда не доходят.</p>
+    <div class="meta-row">
+      <div class="meta-item"><span>Источник данных</span><span>jalgpall.ee (EJL)</span></div>
+      <div class="meta-item"><span>Обновление составов</span><span>2×/год, по трансферным окнам</span></div>
+      <div class="meta-item"><span>Статус</span><span>Концепция зафиксирована</span></div>
+      <div class="meta-item"><span>Следующий шаг</span><span>Прототип движка матча</span></div>
+    </div>
+  </header>
+
+  <div class="page">
+    <nav class="toc">
+      <div class="toc-label">Содержание</div>
+      <ol>
+        <li><a href="#idea">§01 Идея</a></li>
+        <li><a href="#divisions">§02 Дивизионы</a></li>
+        <li><a href="#lobbies">§03 Лобби</a></li>
+        <li><a href="#tactics">§04 Тактика</a></li>
+        <li><a href="#engine">§05 Движок матча</a></li>
+        <li><a href="#condition">§06 Усталость и травмы</a></li>
+        <li><a href="#progress">§07 Прогресс менеджера</a></li>
+        <li><a href="#social">§08 Соцслой</a></li>
+        <li><a href="#roadmap">§09 Дорожная карта</a></li>
+      </ol>
+    </nav>
+
+    <main>
+
+      <section id="idea">
+        <div class="sec-eyebrow">§01</div>
+        <h2>Идея</h2>
+        <p>В больших футбольных играх нет игроков из низших и нишевых чемпионатов — например, эстонской <strong>Meistriliiga</strong>. Эти игроки существуют только в статистике на сайте Эстонского футбольного союза (<em class="term">jalgpall.ee</em>, EJL) — и нигде в виде карточек или персонажей.</p>
+        <p>Проект решает делать хобби-игру вокруг именно этой пустоты: карточки реальных игроков непредставленных лиг, стилизованные (не фотографии — авторский рисованный стиль, не копирующий чужой узнаваемый визуальный бренд), с характеристиками на основе объективной статистики.</p>
+        <ul>
+          <li><strong>Обновление данных</strong> — раз в полгода, синхронно с реальными трансферными окнами (<em class="term">üleminekuaken</em>) — зимним и летним. Это одновременно и техническая необходимость, и естественная граница игровых сезонов.</li>
+          <li><strong>Монетизация</strong> — не приоритет на старте; при росте аудитории — реклама околофутбольных товаров, без давления на баланс игры.</li>
+          <li><strong>Потенциал роста</strong> — модель воспроизводима на другие непредставленные чемпионаты (Фареры, Гибралтар, Мальта…) как отдельные игровые направления.</li>
+        </ul>
+
+        <div class="callout">
+          <p class="quote">Мир — настоящий. Матч — нет.</p>
+          <p>Расписание туров, составы клубов и их статус в лиге отражают реальность чемпионата Эстонии. Единственное, что становится альтернативной вселенной, — это то, что происходит на поле под руководством конкретного менеджера. Отсюда и главный посыл игры: виртуальная команда под управлением человека может пройти сезон совсем не так, как её реальный прототип.</p>
+        </div>
+      </section>
+
+      <section id="divisions">
+        <div class="sec-eyebrow">§02</div>
+        <h2>Дивизионы и статус клуба</h2>
+        <p>Meistriliiga и Esiliiga связаны между собой напрямую — это удваивает число доступных клубов и создаёт настоящую многосезонную карьеру за один клуб.</p>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr><th>Дивизион</th><th>Клубов</th><th>Кубок Eesti Karikas</th><th>Повышение / вылет</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Meistriliiga</td><td>10</td><td>да</td><td rowspan="3">по реальному итогу сезона EJL, не по таблице лобби</td></tr>
+              <tr><td>Esiliiga</td><td>10</td><td>да</td></tr>
+              <tr><td>Esiliiga B</td><td>10</td><td>да</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Если реальный клуб вылетает — менеджер выбирает: <strong>пойти с ним</strong> в низшую лигу (сохранив личную историю и титулы) или <strong>взять другой клуб</strong> в высшем дивизионе и начать погоню за титулом заново. Оба пути валидны и остаются в статистике профиля.</p>
+        <p class="muted">Eesti Karikas объединяет три верхних дивизиона и требует связки нескольких лобби — вынесен в §09 как этап после MVP.</p>
+      </section>
+
+      <section id="lobbies">
+        <div class="sec-eyebrow">§03</div>
+        <h2>Мультиплеер: лобби-копии</h2>
+        <p>Вместо одной общей лиги на всех — множество изолированных <strong>копий-инстансов</strong> одного чемпионата, открывающихся параллельно (по образцу Top Eleven). Это снимает проблему нехватки мест: в Meistriliiga всего 10 клубов, а желающих играть может быть на порядки больше.</p>
+        <ul>
+          <li>Свободные клубы в лобби управляются <strong>AI</strong> — лобби стартует сразу, не дожидаясь полного набора живых менеджеров.</li>
+          <li>Любой человек может занять свободный AI-клуб <strong>в любой момент</strong>, а не только при создании лобби.</li>
+          <li>Вход в игру — <strong>случайное распределение</strong> (с приоритетом менее заполненных, свежих лобби) или <strong>приглашение</strong> от другого менеджера на конкретное место.</li>
+        </ul>
+      </section>
+
+      <section id="tactics">
+        <div class="sec-eyebrow">§04</div>
+        <h2>Тактика вместо трансферов</h2>
+        <p>Менеджер не покупает и не продаёт игроков — состав клуба всегда равен реальному ростеру на момент трансферного окна. Всё влияние менеджера сосредоточено в тактике: расстановка, стиль игры, состав на матч, замены.</p>
+        <p>Стили игры образуют систему контр — прессинг сильнее против владения мячом, но слабее против контратак, и так далее. Это делает выбор тактики значимым сам по себе, независимо от того, чей состав формально сильнее по паспортным данным.</p>
+      </section>
+
+      <section id="engine">
+        <div class="sec-eyebrow">§05</div>
+        <h2>Движок матча — три фазы</h2>
+        <p>Не поминутная симуляция и не мгновенный бросок кубика, а промежуточный формат: матч состоит из фаз (1-й тайм, 2-й тайм, при необходимости — дополнительное время), внутри каждой генерируются события на основе соотношения сил составов и тактик.</p>
+        <div class="flow">
+          <div class="flow-step"><span class="k">вход</span><span class="v">Тактика + состав</span></div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step"><span class="k">фаза 1</span><span class="v">1-й тайм</span></div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step"><span class="k">фаза 2</span><span class="v">2-й тайм</span></div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step"><span class="k">опционально</span><span class="v">Доп. время</span></div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step"><span class="k">выход</span><span class="v">Результат</span></div>
+        </div>
+        <div class="card-grid">
+          <div class="card">
+            <span class="tag">Онлайн</span>
+            <p>Менеджер смотрит трансляцию по фазам вживую и может корректировать тактику и делать замены между таймами.</p>
+          </div>
+          <div class="card">
+            <span class="tag">Оффлайн</span>
+            <p>Замены заданы заранее: пара игроков + минута. Условная логика («если проигрываем») — в апгрейд, не в MVP.</p>
+          </div>
+          <div class="card">
+            <span class="tag">Визуализация</span>
+            <p>Значки с номерами игроков на схематичном поле, появляющиеся в моменты событий — без полноценной анимации и физики.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="condition">
+        <div class="sec-eyebrow">§06</div>
+        <h2>Усталость и травмы</h2>
+        <p><strong>Усталость</strong> — шкала 0–100% на каждого игрока: растёт от сыгранных минут, снижается с отдыхом между турами, штрафует эффективную силу игрока в расчётах матча. Раз трансферов нет, ротация имеющегося состава — единственный рычаг глубины помимо тактики, и особенно чувствительна для клубов с тонкой скамейкой.</p>
+        <p><strong>Травмы</strong> — редкое и полностью <em>виртуальное</em> событие матча (не привязанное к реальным новостям о травмах — при обновлении данных раз в полгода отслеживать их бессмысленно). Вероятность растёт с усталостью игрока; тяжесть — лёгкая / средняя / тяжёлая, восстановление считается в турах.</p>
+        <p>Автозамена травмированного игрока (если менеджер оффлайн и не указал запасного вручную) подбирает игрока с лучшим <strong>эффективным</strong>, а не «паспортным» показателем — то есть с учётом текущей усталости. Это не выбрасывает на поле специально отдохнутого игрока просто потому, что он формально сильнее. Если менеджер сам назначил конкретного запасного — выбор уважается без предупреждений: ответственность на менеджере.</p>
+      </section>
+
+      <section id="progress">
+        <div class="sec-eyebrow">§07</div>
+        <h2>Прогресс менеджера</h2>
+        <p>Прогресс и статистика принадлежат <strong>менеджеру, а не клубу</strong>. Титул, выигранный с одним клубом, остаётся в истории профиля навсегда — даже если клуб позже вылетел, а менеджер ушёл в другую команду.</p>
+        <div class="card-grid">
+          <div class="card"><span class="tag">Медцентр</span><p>Ускоряет восстановление усталости и, в перспективе, травм.</p></div>
+          <div class="card"><span class="tag">Форма клуба</span><p>Косметическая кастомизация — визуальный статус без влияния на баланс.</p></div>
+          <div class="card"><span class="tag">Карточка тренера</span><p>Личный визуальный профиль менеджера, растущий вместе с достижениями.</p></div>
+        </div>
+      </section>
+
+      <section id="social">
+        <div class="sec-eyebrow">§08</div>
+        <h2>Социальный слой</h2>
+        <p>Минимальная версия, чтобы не перегружать движок на старте: таблица лиги внутри лобби и лента реальных трансферных новостей как контент. Чат и прямое соперничество/рейтинги между менеджерами — сознательно отложены (см. §09).</p>
+      </section>
+
+      <section id="roadmap">
+        <div class="sec-eyebrow">§09</div>
+        <h2>Дорожная карта</h2>
+        <ol class="roadmap">
+          <li>
+            <div class="rm-badge">0</div>
+            <div class="rm-body">
+              <div class="status">Проверка гипотезы</div>
+              <h3>Прототип движка одного матча</h3>
+              <p>Без лобби и бэкенда, на нескольких карточках вручную — понять, ощущается ли тактика значимой, а результат честным.</p>
+            </div>
+          </li>
+          <li>
+            <div class="rm-badge">1</div>
+            <div class="rm-body">
+              <div class="status">MVP</div>
+              <h3>Одно лобби, фазовый движок, усталость</h3>
+              <p>Тактика → результат, таблица лиги, реальные составы и расписание одного дивизиона.</p>
+            </div>
+          </li>
+          <li>
+            <div class="rm-badge">2</div>
+            <div class="rm-body">
+              <div class="status">Мультиплеер</div>
+              <h3>Лобби-копии и связка дивизионов</h3>
+              <p>Несколько параллельных лобби, вход по приглашению или случайно, реальные вылет/повышение между Meistriliiga и Esiliiga.</p>
+            </div>
+          </li>
+          <li>
+            <div class="rm-badge">3</div>
+            <div class="rm-body">
+              <div class="status">Глубина</div>
+              <h3>Травмы, прогресс менеджера, тайминг замен</h3>
+              <p>Виртуальные травмы, репутация и апгрейды, планирование замен по времени в оффлайне.</p>
+            </div>
+          </li>
+          <li>
+            <div class="rm-badge">4</div>
+            <div class="rm-body">
+              <div class="status">Апгрейд</div>
+              <h3>Eesti Karikas, соцслой, новые лиги</h3>
+              <p>Кубок трёх дивизионов, условные замены, чат и рейтинги менеджеров, расширение на другие непредставленные чемпионаты.</p>
+            </div>
+          </li>
+        </ol>
+      </section>
+
+      <footer>
+        <div class="next">Следующий шаг — не лобби и не бэкенд, а один матч.</div>
+        <p>Пока не ясно, весело ли играть в тактику и фазовый результат сам по себе, наращивать инфраструктуру вокруг него преждевременно.</p>
+        <div class="glossary">
+          <b>EJL</b> — Eesti Jalgpalli Liit, Федерация футбола Эстонии, оператор jalgpall.ee ·
+          <b>üleminekuaken</b> — трансферное окно ·
+          <b>Eesti Karikas</b> — Кубок Эстонии
+        </div>
+      </footer>
+
+    </main>
+  </div>
+</div>

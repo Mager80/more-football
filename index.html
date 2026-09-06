@@ -1,0 +1,96 @@
+<meta charset="UTF-8">
+<title>More Football — сайт проекта</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --paper:#F1F4F8; --surface:#FFFFFF; --ink:#14181F; --muted:#55606E; --line:#D7DEE7;
+    --accent:#1D5FA6; --accent-soft:#E4EDF7; --pitch:#2F6B4F; --pitch-soft:#E3EEE8;
+    --gold:#8C6423; --gold-soft:#F5ECDC;
+    --shadow:0 1px 2px rgba(20,24,31,.07);
+    --font-display:'Big Shoulders Display','Oswald','Arial Narrow',sans-serif;
+    --font-body:'Source Serif 4','Georgia',serif;
+    --font-mono:'IBM Plex Mono','SFMono-Regular',Consolas,monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#0F131A; --surface:#161C26; --ink:#E7ECF2; --muted:#93A0B2; --line:#2A3342;
+      --accent:#6FA8E8; --accent-soft:#1C2938; --pitch:#63B78A; --pitch-soft:#182620;
+      --gold:#D8AD6C; --gold-soft:#2A2013; --shadow:0 1px 2px rgba(0,0,0,.5);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#0F131A; --surface:#161C26; --ink:#E7ECF2; --muted:#93A0B2; --line:#2A3342;
+    --accent:#6FA8E8; --accent-soft:#1C2938; --pitch:#63B78A; --pitch-soft:#182620;
+    --gold:#D8AD6C; --gold-soft:#2A2013; --shadow:0 1px 2px rgba(0,0,0,.5);
+  }
+  *{box-sizing:border-box;}
+  body{background:var(--paper);color:var(--ink);font-family:var(--font-body);line-height:1.5;-webkit-font-smoothing:antialiased;}
+
+  .nav{
+    display:flex;align-items:center;gap:22px;padding:16px 24px;border-bottom:1px solid var(--line);
+    font-family:var(--font-mono);font-size:.82rem;background:var(--surface);
+  }
+  .nav .brand{font-family:var(--font-display);font-weight:800;font-size:1.05rem;color:var(--ink);margin-right:auto;letter-spacing:.01em;}
+  .nav a{color:var(--muted);text-decoration:none;}
+  .nav a:hover{color:var(--accent);}
+  .nav a.current{color:var(--accent);font-weight:600;}
+
+  .wrap{max-width:960px;margin:0 auto;padding:56px 24px 80px;}
+  .eyebrow{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--pitch);display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+  .eyebrow::before{content:"";width:22px;height:2px;background:var(--pitch);display:inline-block;}
+  h1{font-family:var(--font-display);font-weight:800;font-size:clamp(2.2rem,5vw,3.2rem);line-height:1.0;margin:0 0 16px;text-wrap:balance;}
+  .lede{color:var(--muted);max-width:64ch;margin:0 0 48px;font-size:1.08rem;text-wrap:balance;}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;margin-bottom:48px;}
+  .tile{
+    background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:22px;
+    box-shadow:var(--shadow);text-decoration:none;color:var(--ink);display:flex;flex-direction:column;gap:8px;
+  }
+  .tile:hover{border-color:var(--accent);}
+  .tile .k{font-family:var(--font-mono);font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--pitch);}
+  .tile h2{font-family:var(--font-display);font-weight:700;font-size:1.3rem;margin:0;}
+  .tile p{margin:0;color:var(--muted);font-size:.92rem;}
+  .tile .status{font-family:var(--font-mono);font-size:.68rem;color:var(--gold);margin-top:auto;padding-top:8px;}
+
+  .status-block{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--pitch);border-radius:4px;padding:18px 20px;font-size:.94rem;}
+  .status-block b{color:var(--ink);}
+</style>
+
+<nav class="nav">
+  <span class="brand">More Football</span>
+  <a href="index.html" class="current">Главная</a>
+  <a href="roadmap.html">Концепция</a>
+  <a href="player-card-sample.html">Карточка</a>
+  <a href="match-engine-prototype.html">Движок матча</a>
+</nav>
+
+<div class="wrap">
+  <div class="eyebrow">Рабочий сайт проекта</div>
+  <h1>More Football</h1>
+  <p class="lede">Здесь собраны все части концепции футбольного менеджера на данных лиг, до которых не доходят крупные игры — старт с чемпионата Эстонии. Можно открывать, тестировать и дорабатывать дизайн, не пересобирая всё с нуля в чате.</p>
+
+  <div class="grid">
+    <a class="tile" href="roadmap.html">
+      <span class="k">§00 — концепция</span>
+      <h2>Концепция и дорожная карта</h2>
+      <p>Полное описание идеи: лиги-лобби, тактика без трансферов, усталость, травмы, прогресс менеджера.</p>
+      <span class="status">Зафиксировано</span>
+    </a>
+    <a class="tile" href="player-card-sample.html">
+      <span class="k">§01 — карточки</span>
+      <h2>Карточка игрока</h2>
+      <p>Образец на реальных данных Stanislav Tsõmbaljuk (Maardu LM) с мультяшным портретом. Чистый файл карточки для копирования — <a href="player-card.html" onclick="event.stopPropagation()">player-card.html</a>.</p>
+      <span class="status">Образец готов</span>
+    </a>
+    <a class="tile" href="match-engine-prototype.html">
+      <span class="k">§02 — движок</span>
+      <h2>Движок матча</h2>
+      <p>Тактика, контры стилей, зоны по флангам, перестановки в перерыве.</p>
+      <span class="status">Прототип, Phase 0</span>
+    </a>
+  </div>
+
+  <div class="status-block">
+    <b>Дальше по плану:</b> стандарты (угловые/штрафные) в движке матча, затем — довести визуальный дизайн карточек и интерфейса. Мобильное приложение — отдельный этап позже, когда механика и дизайн устоятся на сайте.
+  </div>
+</div>
