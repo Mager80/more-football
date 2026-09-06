@@ -6,7 +6,7 @@
     --paper:#F1F4F8; --surface:#FFFFFF; --ink:#14181F; --muted:#55606E; --line:#D7DEE7;
     --accent:#1D5FA6; --accent-soft:#E4EDF7; --pitch:#2F6B4F; --pitch-soft:#E3EEE8;
     --gold:#8C6423; --gold-soft:#F5ECDC; --bad:#A5432D; --bad-soft:#F6E7E2;
-    --weak:#A5432D; --weak-soft:#F6E7E2;
+    --weak:#A5432D; --weak-soft:#F6E7E2; --team-b:#7A4FB5;
     --shadow:0 1px 2px rgba(20,24,31,.07);
     --font-display:'Big Shoulders Display','Oswald','Arial Narrow',sans-serif;
     --font-body:'Source Serif 4','Georgia',serif;
@@ -17,7 +17,7 @@
       --paper:#0F131A; --surface:#161C26; --ink:#E7ECF2; --muted:#93A0B2; --line:#2A3342;
       --accent:#6FA8E8; --accent-soft:#1C2938; --pitch:#63B78A; --pitch-soft:#182620;
       --gold:#D8AD6C; --gold-soft:#2A2013; --bad:#E28568; --bad-soft:#2E1B15;
-      --weak:#E28568; --weak-soft:#2E1B15;
+      --weak:#E28568; --weak-soft:#2E1B15; --team-b:#B79AE0;
       --shadow:0 1px 2px rgba(0,0,0,.5);
     }
   }
@@ -25,7 +25,7 @@
     --paper:#0F131A; --surface:#161C26; --ink:#E7ECF2; --muted:#93A0B2; --line:#2A3342;
     --accent:#6FA8E8; --accent-soft:#1C2938; --pitch:#63B78A; --pitch-soft:#182620;
     --gold:#D8AD6C; --gold-soft:#2A2013; --bad:#E28568; --bad-soft:#2E1B15;
-    --weak:#E28568; --weak-soft:#2E1B15;
+    --weak:#E28568; --weak-soft:#2E1B15; --team-b:#B79AE0;
     --shadow:0 1px 2px rgba(0,0,0,.5);
   }
   *{box-sizing:border-box;}
@@ -84,6 +84,43 @@
   .matchup-note{
     text-align:center;font-family:var(--font-mono);font-size:.8rem;color:var(--pitch);
     min-height:1.4em;margin:14px 0 20px;
+  }
+
+  .pitch-legend{
+    display:flex;justify-content:center;gap:24px;margin-bottom:12px;
+    font-family:var(--font-mono);font-size:.76rem;color:var(--muted);
+  }
+  .pitch-legend span{display:inline-flex;align-items:center;gap:6px;}
+  .pitch-legend .dot{width:10px;height:10px;border-radius:50%;display:inline-block;}
+  .pitch-legend .dot.a{background:var(--accent);}
+  .pitch-legend .dot.b{background:var(--team-b);}
+
+  .pitch-wrap{
+    position:relative;width:100%;max-width:400px;aspect-ratio:2/3;margin:0 auto 28px;
+    border-radius:8px;overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--line);
+  }
+  .pitch-svg{position:absolute;inset:0;width:100%;height:100%;display:block;}
+  .pitch-grass{fill:var(--pitch);}
+  .pitch-stripe{fill:#fff;opacity:.045;}
+  .pitch-lines{fill:none;stroke:#fff;stroke-opacity:.8;stroke-width:.6;}
+  .pitch-lines circle[fill]{stroke:none;}
+
+  .pitch-chips{position:absolute;inset:0;}
+  .chip{
+    position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:3px;
+    width:58px;transition:left .5s ease, top .5s ease;
+  }
+  .chip .num{
+    width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-family:var(--font-display);font-weight:800;font-size:.82rem;color:#fff;
+    box-shadow:0 2px 5px rgba(0,0,0,.4);border:2px solid rgba(255,255,255,.9);
+  }
+  .chip.team-a .num{background:var(--accent);}
+  .chip.team-b .num{background:var(--team-b);}
+  .chip .lbl{
+    font-family:var(--font-mono);font-size:.56rem;letter-spacing:.01em;color:var(--ink);
+    background:var(--surface);padding:1px 4px;border-radius:3px;border:1px solid var(--line);
+    white-space:nowrap;max-width:64px;overflow:hidden;text-overflow:ellipsis;
   }
 
   .halftime-panel{
@@ -159,6 +196,34 @@
 
   <div class="matchup-note" id="matchup-note"></div>
 
+  <div class="pitch-legend">
+    <span><span class="dot a"></span>Maardu LM</span>
+    <span><span class="dot b"></span>Соперник (тест)</span>
+  </div>
+  <div class="pitch-wrap">
+    <svg class="pitch-svg" viewBox="0 0 100 150" preserveAspectRatio="none">
+      <rect class="pitch-grass" x="0" y="0" width="100" height="150"/>
+      <rect class="pitch-stripe" x="0" y="0" width="16.66" height="150"/>
+      <rect class="pitch-stripe" x="33.33" y="0" width="16.66" height="150"/>
+      <rect class="pitch-stripe" x="66.66" y="0" width="16.66" height="150"/>
+      <g class="pitch-lines">
+        <rect x="3" y="3" width="94" height="144"/>
+        <line x1="3" y1="75" x2="97" y2="75"/>
+        <circle cx="50" cy="75" r="11"/>
+        <circle cx="50" cy="75" r="0.8" fill="#fff"/>
+        <rect x="26" y="3" width="48" height="17"/>
+        <rect x="38" y="3" width="24" height="6.5"/>
+        <circle cx="50" cy="14" r="0.8" fill="#fff"/>
+        <path d="M 39 20 A 11 11 0 0 0 61 20"/>
+        <rect x="26" y="130" width="48" height="17"/>
+        <rect x="38" y="140.5" width="24" height="6.5"/>
+        <circle cx="50" cy="136" r="0.8" fill="#fff"/>
+        <path d="M 39 130 A 11 11 0 0 1 61 130"/>
+      </g>
+    </svg>
+    <div class="pitch-chips" id="pitch-chips"></div>
+  </div>
+
   <div class="halftime-panel" id="halftime-panel">
     <h3>Перерыв: перестановки по флангам</h3>
     <div class="swap-grid">
@@ -195,22 +260,46 @@ const ZONES = ["left","center","right"];
 const ZONE_LABEL = { left: "Левый фланг", center: "Центр", right: "Правый фланг" };
 const MIRROR = { left: "right", center: "center", right: "left" };
 
-function player(pas,fiz,teh,sko,atk,obr,name){ return {pas,fiz,teh,sko,atk,obr,name}; }
+function player(pas,fiz,teh,sko,atk,obr,name,num,short){ return {pas,fiz,teh,sko,atk,obr,name,num,short}; }
 
 const teamA = {
   name: "Maardu LM",
-  gk: player(40,66,38,30,10,68,"Вратарь A"),
-  def: { left: player(45,62,48,40,30,64,"Защитник A-Л"), center: player(44,60,47,39,29,62,"Защитник A-Ц"), right: player(43,61,46,38,28,63,"Защитник A-П") },
-  mid: { left: player(52,55,53,48,44,48,"Полузащитник A-Л"), center: player(55,58,54,50,46,50,"Полузащитник A-Ц"), right: player(70,68,64,62,58,55,"Tsõmbaljuk") },
-  fwd: { left: player(45,55,52,60,62,28,"Нападающий A-Л"), center: player(46,56,53,60,63,28,"Нападающий A-Ц"), right: player(44,54,50,58,60,26,"Нападающий A-П") },
+  gk: player(40,66,38,30,10,68,"Вратарь A",1,"ВРТ"),
+  def: {
+    left:   player(45,62,48,40,30,64,"Защитник A-Л",3,"ЗЩ-Л"),
+    center: player(44,60,47,39,29,62,"Защитник A-Ц",4,"ЗЩ-Ц"),
+    right:  player(43,61,46,38,28,63,"Защитник A-П",2,"ЗЩ-П"),
+  },
+  mid: {
+    left:   player(52,55,53,48,44,48,"Полузащитник A-Л",8,"ПЗ-Л"),
+    center: player(55,58,54,50,46,50,"Полузащитник A-Ц",6,"ПЗ-Ц"),
+    right:  player(70,68,64,62,62,55,"Tsõmbaljuk",77,"Tsõmbaljuk"),
+  },
+  fwd: {
+    left:   player(45,55,52,60,62,28,"Нападающий A-Л",11,"НП-Л"),
+    center: player(46,56,53,60,63,28,"Нападающий A-Ц",9,"НП-Ц"),
+    right:  player(44,54,50,58,60,26,"Нападающий A-П",7,"НП-П"),
+  },
 };
 
 const teamB = {
   name: "Соперник (тест)",
-  gk: player(38,64,36,30,10,64,"Вратарь B"),
-  def: { left: player(44,63,46,40,30,62,"Защитник B-Л"), center: player(42,60,44,38,28,60,"Защитник B-Ц"), right: player(30,42,32,26,18,40,"Защитник B-П (слабый)") },
-  mid: { left: player(56,54,56,50,48,44,"Полузащитник B-Л"), center: player(60,58,58,54,50,46,"Полузащитник B-Ц"), right: player(52,56,50,48,44,46,"Полузащитник B-П") },
-  fwd: { left: player(44,54,50,58,60,26,"Нападающий B-Л"), center: player(46,56,53,62,64,28,"Нападающий B-Ц"), right: player(42,52,48,56,58,24,"Нападающий B-П") },
+  gk: player(38,64,36,30,10,64,"Вратарь B",1,"ВРТ"),
+  def: {
+    left:   player(44,63,46,40,30,62,"Защитник B-Л",3,"ЗЩ-Л"),
+    center: player(42,60,44,38,28,60,"Защитник B-Ц",4,"ЗЩ-Ц"),
+    right:  player(30,42,32,26,18,40,"Защитник B-П (слабый)",2,"ЗЩ-П"),
+  },
+  mid: {
+    left:   player(56,54,56,50,48,44,"Полузащитник B-Л",8,"ПЗ-Л"),
+    center: player(60,58,58,54,50,46,"Полузащитник B-Ц",6,"ПЗ-Ц"),
+    right:  player(52,56,50,48,44,46,"Полузащитник B-П",10,"ПЗ-П"),
+  },
+  fwd: {
+    left:   player(44,54,50,58,60,26,"Нападающий B-Л",11,"НП-Л"),
+    center: player(46,56,53,62,64,28,"Нападающий B-Ц",9,"НП-Ц"),
+    right:  player(42,52,48,56,58,24,"Нападающий B-П",7,"НП-П"),
+  },
 };
 
 function zv(p, k1, k2){ return (p[k1]+p[k2])/2; }
@@ -270,6 +359,34 @@ function renderZoneTable(team, opp, elId){
 function renderZones(){
   renderZoneTable(teamA, teamB, "teamA-zones");
   renderZoneTable(teamB, teamA, "teamB-zones");
+}
+
+const PITCH_ROWS = {
+  A: { gk:93, def:75, mid:60, fwd:45 },
+  B: { gk:7,  def:25, mid:40, fwd:55 },
+};
+const PITCH_X = { left:25, center:50, right:75 };
+
+function renderPitch(){
+  const container = document.getElementById("pitch-chips");
+  container.innerHTML = "";
+  function addChip(p, x, y, teamKey){
+    const el = document.createElement("div");
+    el.className = "chip team-" + teamKey.toLowerCase();
+    el.style.left = x + "%";
+    el.style.top = y + "%";
+    el.innerHTML = `<div class="num">${p.num}</div><div class="lbl">${p.short}</div>`;
+    container.appendChild(el);
+  }
+  [["A", teamA], ["B", teamB]].forEach(([key, team]) => {
+    const rows = PITCH_ROWS[key];
+    addChip(team.gk, PITCH_X.center, rows.gk, key);
+    ZONES.forEach(z => {
+      addChip(team.def[z], PITCH_X[z], rows.def, key);
+      addChip(team.mid[z], PITCH_X[z], rows.mid, key);
+      addChip(team.fwd[z], PITCH_X[z], rows.fwd, key);
+    });
+  });
 }
 
 function renderMatchupNote(){
@@ -362,6 +479,7 @@ function swapFlanks(team, line){
   team[line].left = r; team[line].right = l;
   renderZones();
   renderSwapPanel();
+  renderPitch();
 }
 
 function renderSwapPanel(){
@@ -402,5 +520,6 @@ document.getElementById("btn-play").addEventListener("click", () => {
 renderTacticButtons();
 renderZones();
 renderMatchupNote();
+renderPitch();
 updateScoreboard();
 </script>
