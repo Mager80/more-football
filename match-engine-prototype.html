@@ -52,7 +52,13 @@
   .team-card .club-line{font-family:var(--font-mono);font-size:.72rem;color:var(--muted);margin-bottom:16px;}
   .vs{display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:800;font-size:1.4rem;color:var(--muted);}
 
-  .tactic-row{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
+  .field-label{
+    font-family:var(--font-mono);font-size:.66rem;text-transform:uppercase;letter-spacing:.08em;
+    color:var(--muted);margin:14px 0 8px;
+  }
+  .field-label:first-child{margin-top:0;}
+  .tactic-row{display:flex;flex-direction:column;gap:8px;}
+  .formation-row{display:flex;flex-wrap:wrap;gap:8px;}
   .tactic-btn{
     font-family:var(--font-mono);font-size:.82rem;text-align:left;
     padding:10px 12px;border-radius:4px;border:1px solid var(--line);background:var(--paper);color:var(--ink);
@@ -62,6 +68,13 @@
   .tactic-btn.active{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:600;}
   .tactic-btn .beats{font-size:.68rem;color:var(--muted);font-weight:400;}
   .tactic-btn.active .beats{color:var(--accent);}
+  .formation-btn{
+    font-family:var(--font-mono);font-size:.8rem;font-weight:600;
+    padding:8px 12px;border-radius:20px;border:1px solid var(--line);background:var(--paper);color:var(--ink);
+    cursor:pointer;
+  }
+  .formation-btn:hover{border-color:var(--accent);}
+  .formation-btn.active{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);}
 
   .zone-table{width:100%;border-collapse:collapse;font-family:var(--font-mono);font-size:.76rem;margin-top:12px;padding-top:12px;border-top:1px dashed var(--line);}
   .zone-table th{font-weight:500;color:var(--muted);text-align:center;padding:2px 4px 6px;font-size:.66rem;text-transform:uppercase;letter-spacing:.04em;}
@@ -103,24 +116,23 @@
   .pitch-grass{fill:var(--pitch);}
   .pitch-stripe{fill:#fff;opacity:.045;}
   .pitch-lines{fill:none;stroke:#fff;stroke-opacity:.8;stroke-width:.6;}
-  .pitch-lines circle[fill]{stroke:none;}
 
   .pitch-chips{position:absolute;inset:0;}
   .chip{
     position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:3px;
-    width:58px;transition:left .5s ease, top .5s ease;
+    width:54px;transition:left .5s ease, top .5s ease;
   }
   .chip .num{
-    width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;
-    font-family:var(--font-display);font-weight:800;font-size:.82rem;color:#fff;
+    width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-family:var(--font-display);font-weight:800;font-size:.76rem;color:#fff;
     box-shadow:0 2px 5px rgba(0,0,0,.4);border:2px solid rgba(255,255,255,.9);
   }
   .chip.team-a .num{background:var(--accent);}
   .chip.team-b .num{background:var(--team-b);}
   .chip .lbl{
-    font-family:var(--font-mono);font-size:.56rem;letter-spacing:.01em;color:var(--ink);
+    font-family:var(--font-mono);font-size:.54rem;letter-spacing:.01em;color:var(--ink);
     background:var(--surface);padding:1px 4px;border-radius:3px;border:1px solid var(--line);
-    white-space:nowrap;max-width:64px;overflow:hidden;text-overflow:ellipsis;
+    white-space:nowrap;max-width:62px;overflow:hidden;text-overflow:ellipsis;
   }
 
   .halftime-panel{
@@ -176,20 +188,32 @@
 <div class="wrap">
   <div class="eyebrow">Прототип · Phase 0 дорожной карты</div>
   <h1>Движок одного матча</h1>
-  <p class="lede">Тактика задаёт общее преимущество, но каждый момент разыгрывается по конкретной зоне — левый фланг, центр или правый — против зеркальной зоны обороны соперника. Слабый фланг видно в таблице ниже и можно закрыть перестановкой в перерыве.</p>
+  <p class="lede">Расстановка определяет, сколько игроков реально выходит в каждой линии (4-4-2, 4-3-3, 3-5-2…), тактика — стиль игры поверх этого. Момент разыгрывается по зоне — левый фланг, центр или правый — против зеркальной зоны обороны соперника.</p>
 
   <div class="setup">
     <div class="team-card" id="teamA-card">
       <h2>Maardu LM</h2>
-      <div class="club-line">Esiliiga · включает реальную карточку Tsõmbaljuk (ПЗ, справа)</div>
+      <div class="club-line">Esiliiga · включает реальную карточку Tsõmbaljuk</div>
+
+      <div class="field-label">Расстановка</div>
+      <div class="formation-row" data-team="A"></div>
+
+      <div class="field-label">Тактика</div>
       <div class="tactic-row" data-team="A"></div>
+
       <table class="zone-table" id="teamA-zones"></table>
     </div>
     <div class="vs">VS</div>
     <div class="team-card" id="teamB-card">
       <h2>Соперник (тест)</h2>
-      <div class="club-line">Условный состав · слабый правый защитник</div>
+      <div class="club-line">Условный состав · слабый защитник №2</div>
+
+      <div class="field-label">Расстановка</div>
+      <div class="formation-row" data-team="B"></div>
+
+      <div class="field-label">Тактика</div>
       <div class="tactic-row" data-team="B"></div>
+
       <table class="zone-table" id="teamB-zones"></table>
     </div>
   </div>
@@ -244,10 +268,10 @@
   </div>
 
   <div class="log" id="log">
-    <div class="log-empty">Выберите тактики обеих команд и нажмите «Начать матч».</div>
+    <div class="log-empty">Выберите расстановку, тактику и нажмите «Начать матч».</div>
   </div>
 
-  <footer>Числа и формулы — рабочие, для проверки ощущений от механики, не финальный баланс. См. <a href="roadmap.html">roadmap.html</a> и <a href="player-card.html">player-card.html</a> в этом же проекте.</footer>
+  <footer>Числа и формулы — рабочие, для проверки ощущений от механики, не финальный баланс. См. <a href="roadmap.html">roadmap.html</a> и <a href="cards.html">cards.html</a> в этом же проекте.</footer>
 </div>
 
 <script>
@@ -256,56 +280,126 @@ const TACTICS = {
   possession: { label: "Владение",   beats: "counter" },
   counter:    { label: "Контратаки", beats: "press" },
 };
+
+const FORMATIONS = {
+  "4-4-2": { def:4, mid:4, fwd:2 },
+  "4-3-3": { def:4, mid:3, fwd:3 },
+  "3-5-2": { def:3, mid:5, fwd:2 },
+  "3-4-3": { def:3, mid:4, fwd:3 },
+  "5-3-2": { def:5, mid:3, fwd:2 },
+};
+
 const ZONES = ["left","center","right"];
 const ZONE_LABEL = { left: "Левый фланг", center: "Центр", right: "Правый фланг" };
 const MIRROR = { left: "right", center: "center", right: "left" };
+const CENTRAL_TAGS = ["CL","C","CR"];
 
-function player(pas,fiz,teh,sko,atk,obr,name,num,short){ return {pas,fiz,teh,sko,atk,obr,name,num,short}; }
+// how each line's zone tags map to a horizontal % position, by squad count in that line
+const ZONE_TAGS = {
+  2: ["L","R"],
+  3: ["L","C","R"],
+  4: ["L","CL","CR","R"],
+  5: ["L","CL","C","CR","R"],
+};
+const ZONE_X = {
+  2: { L:30, R:70 },
+  3: { L:25, C:50, R:75 },
+  4: { L:15, CL:38, CR:62, R:85 },
+  5: { L:12, CL:31, C:50, CR:69, R:88 },
+};
+
+function player(pas,fiz,teh,sko,atk,obr,name,num){ return {pas,fiz,teh,sko,atk,obr,name,num}; }
 
 const teamA = {
   name: "Maardu LM",
-  gk: player(40,66,38,30,10,68,"Вратарь A",1,"ВРТ"),
-  def: {
-    left:   player(45,62,48,40,30,64,"Защитник A-Л",3,"ЗЩ-Л"),
-    center: player(44,60,47,39,29,62,"Защитник A-Ц",4,"ЗЩ-Ц"),
-    right:  player(43,61,46,38,28,63,"Защитник A-П",2,"ЗЩ-П"),
-  },
-  mid: {
-    left:   player(52,55,53,48,44,48,"Полузащитник A-Л",8,"ПЗ-Л"),
-    center: player(55,58,54,50,46,50,"Полузащитник A-Ц",6,"ПЗ-Ц"),
-    right:  player(70,68,64,62,62,55,"Tsõmbaljuk",77,"Tsõmbaljuk"),
-  },
-  fwd: {
-    left:   player(45,55,52,60,62,28,"Нападающий A-Л",11,"НП-Л"),
-    center: player(46,56,53,60,63,28,"Нападающий A-Ц",9,"НП-Ц"),
-    right:  player(44,54,50,58,60,26,"Нападающий A-П",7,"НП-П"),
-  },
+  gk: player(40,66,38,30,10,68,"Вратарь A",1),
+  formation: "4-4-2",
+  defPool: [
+    player(45,62,48,40,30,64,"Защитник A-1",3),
+    player(44,60,47,39,29,62,"Защитник A-2",4),
+    player(43,61,46,38,28,63,"Защитник A-3",5),
+    player(42,60,45,37,27,61,"Защитник A-4",2),
+    player(41,59,44,36,26,60,"Защитник A-5",14),
+  ],
+  midPool: [
+    player(52,55,53,48,44,48,"Полузащитник A-1",8),
+    player(55,58,54,50,46,50,"Полузащитник A-2",6),
+    player(70,68,64,62,62,55,"Tsõmbaljuk",77),
+    player(50,54,52,46,42,46,"Полузащитник A-4",15),
+    player(51,53,51,47,43,47,"Полузащитник A-5",16),
+  ],
+  fwdPool: [
+    player(45,55,52,60,62,28,"Нападающий A-1",11),
+    player(46,56,53,60,63,28,"Нападающий A-2",9),
+    player(44,54,50,58,60,26,"Нападающий A-3",7),
+  ],
 };
 
 const teamB = {
   name: "Соперник (тест)",
-  gk: player(38,64,36,30,10,64,"Вратарь B",1,"ВРТ"),
-  def: {
-    left:   player(44,63,46,40,30,62,"Защитник B-Л",3,"ЗЩ-Л"),
-    center: player(42,60,44,38,28,60,"Защитник B-Ц",4,"ЗЩ-Ц"),
-    right:  player(30,42,32,26,18,40,"Защитник B-П (слабый)",2,"ЗЩ-П"),
-  },
-  mid: {
-    left:   player(56,54,56,50,48,44,"Полузащитник B-Л",8,"ПЗ-Л"),
-    center: player(60,58,58,54,50,46,"Полузащитник B-Ц",6,"ПЗ-Ц"),
-    right:  player(52,56,50,48,44,46,"Полузащитник B-П",10,"ПЗ-П"),
-  },
-  fwd: {
-    left:   player(44,54,50,58,60,26,"Нападающий B-Л",11,"НП-Л"),
-    center: player(46,56,53,62,64,28,"Нападающий B-Ц",9,"НП-Ц"),
-    right:  player(42,52,48,56,58,24,"Нападающий B-П",7,"НП-П"),
-  },
+  gk: player(38,64,36,30,10,64,"Вратарь B",1),
+  formation: "4-4-2",
+  defPool: [
+    player(44,63,46,40,30,62,"Защитник B-1",3),
+    player(42,60,44,38,28,60,"Защитник B-2",4),
+    player(43,62,45,39,29,61,"Защитник B-3",5),
+    player(30,42,32,26,18,40,"Защитник B-4 (слабый)",2),
+    player(42,61,44,38,28,60,"Защитник B-5",14),
+  ],
+  midPool: [
+    player(56,54,56,50,48,44,"Полузащитник B-1",8),
+    player(60,58,58,54,50,46,"Полузащитник B-2",6),
+    player(52,56,50,48,44,46,"Полузащитник B-3",10),
+    player(54,53,54,49,45,44,"Полузащитник B-4",15),
+    player(53,52,53,48,44,43,"Полузащитник B-5",16),
+  ],
+  fwdPool: [
+    player(44,54,50,58,60,26,"Нападающий B-1",11),
+    player(46,56,53,62,64,28,"Нападающий B-2",9),
+    player(42,52,48,56,58,24,"Нападающий B-3",7),
+  ],
 };
 
+function buildLine(pool, count){
+  const tags = ZONE_TAGS[count];
+  const xs = ZONE_X[count];
+  return pool.slice(0, count).map((p, i) => ({ player: p, zone: tags[i], x: xs[tags[i]] }));
+}
+
+function applyFormation(team, key){
+  team.formation = key;
+  const f = FORMATIONS[key];
+  team.def = buildLine(team.defPool, f.def);
+  team.mid = buildLine(team.midPool, f.mid);
+  team.fwd = buildLine(team.fwdPool, f.fwd);
+}
+
+applyFormation(teamA, teamA.formation);
+applyFormation(teamB, teamB.formation);
+
 function zv(p, k1, k2){ return (p[k1]+p[k2])/2; }
-function defZoneVal(team, z){ return zv(team.def[z], "obr","fiz"); }
-function midZoneVal(team, z){ return zv(team.mid[z], "pas","teh"); }
-function fwdZoneVal(team, z){ return zv(team.fwd[z], "atk","sko"); }
+
+function lineValue(line, side, k1, k2){
+  if (side === "left"){ const e = line.find(x=>x.zone==="L"); return zv(e.player,k1,k2); }
+  if (side === "right"){ const e = line.find(x=>x.zone==="R"); return zv(e.player,k1,k2); }
+  const central = line.filter(x=>CENTRAL_TAGS.includes(x.zone));
+  if (central.length) return central.reduce((s,x)=>s+zv(x.player,k1,k2),0)/central.length;
+  // no dedicated centre in a 2-wide line: blend the flanks
+  const l = line.find(x=>x.zone==="L"), r = line.find(x=>x.zone==="R");
+  return (zv(l.player,k1,k2)+zv(r.player,k1,k2))/2;
+}
+
+function defZoneVal(team, z){ return lineValue(team.def, z, "obr","fiz"); }
+function midZoneVal(team, z){ return lineValue(team.mid, z, "pas","teh"); }
+function fwdZoneVal(team, z){ return lineValue(team.fwd, z, "atk","sko"); }
+
+function playersInZone(line, side){
+  if (side === "left") return [line.find(x=>x.zone==="L").player];
+  if (side === "right") return [line.find(x=>x.zone==="R").player];
+  const central = line.filter(x=>CENTRAL_TAGS.includes(x.zone)).map(x=>x.player);
+  if (central.length) return central;
+  return [line.find(x=>x.zone==="L").player, line.find(x=>x.zone==="R").player];
+}
 
 function tacticEdge(tA, tB){
   if (tA === tB) return 0;
@@ -319,6 +413,27 @@ function tacticMult(edge, forAttack){
 }
 
 let state = { tacticA: "press", tacticB: "possession", phase: 0, score: {A:0,B:0} };
+
+function renderFormationButtons(){
+  ["A","B"].forEach(key => {
+    const team = key==="A" ? teamA : teamB;
+    const row = document.querySelector(`.formation-row[data-team="${key}"]`);
+    row.innerHTML = "";
+    Object.keys(FORMATIONS).forEach(fKey => {
+      const btn = document.createElement("button");
+      btn.className = "formation-btn" + (team.formation===fKey ? " active" : "");
+      btn.textContent = fKey;
+      btn.onclick = () => {
+        applyFormation(team, fKey);
+        renderFormationButtons();
+        renderZones();
+        renderPitch();
+        if (state.phase === 1) renderSwapPanel();
+      };
+      row.appendChild(btn);
+    });
+  });
+}
 
 function renderTacticButtons(){
   ["A","B"].forEach(team => {
@@ -365,7 +480,6 @@ const PITCH_ROWS = {
   A: { gk:93, def:75, mid:60, fwd:45 },
   B: { gk:7,  def:25, mid:40, fwd:55 },
 };
-const PITCH_X = { left:25, center:50, right:75 };
 
 function renderPitch(){
   const container = document.getElementById("pitch-chips");
@@ -375,17 +489,15 @@ function renderPitch(){
     el.className = "chip team-" + teamKey.toLowerCase();
     el.style.left = x + "%";
     el.style.top = y + "%";
-    el.innerHTML = `<div class="num">${p.num}</div><div class="lbl">${p.short}</div>`;
+    el.innerHTML = `<div class="num">${p.num}</div><div class="lbl">${p.name}</div>`;
     container.appendChild(el);
   }
   [["A", teamA], ["B", teamB]].forEach(([key, team]) => {
     const rows = PITCH_ROWS[key];
-    addChip(team.gk, PITCH_X.center, rows.gk, key);
-    ZONES.forEach(z => {
-      addChip(team.def[z], PITCH_X[z], rows.def, key);
-      addChip(team.mid[z], PITCH_X[z], rows.mid, key);
-      addChip(team.fwd[z], PITCH_X[z], rows.fwd, key);
-    });
+    addChip(team.gk, 50, rows.gk, key);
+    team.def.forEach(e => addChip(e.player, e.x, rows.def, key));
+    team.mid.forEach(e => addChip(e.player, e.x, rows.mid, key));
+    team.fwd.forEach(e => addChip(e.player, e.x, rows.fwd, key));
   });
 }
 
@@ -420,10 +532,15 @@ function weightedZonePick(attTeam, defTeam){
   return ZONES[ZONES.length-1];
 }
 
-function weightedPlayerPick(p1, p2){
-  const w1 = p1.atk+p1.sko, w2 = p2.atk+p2.sko;
-  return Math.random()*(w1+w2) < w1 ? p1 : p2;
+function weightedPickFromList(players){
+  const weights = players.map(p => p.atk+p.sko+1);
+  const total = weights.reduce((a,b)=>a+b,0);
+  let r = Math.random()*total;
+  for (let i=0;i<players.length;i++){ r -= weights[i]; if (r<=0) return players[i]; }
+  return players[players.length-1];
 }
+
+function avgZones(fn){ return (fn("left")+fn("center")+fn("right"))/3; }
 
 function simulatePhase(phaseLabel){
   addLogPhaseDivider(phaseLabel);
@@ -449,7 +566,8 @@ function simulatePhase(phaseLabel){
       const localRatio = attVal - defVal - gk*0.15;
       const goalChance = Math.max(0.05, Math.min(0.45, 0.15 + localRatio/230));
 
-      const scorer = weightedPlayerPick(side.att.fwd[zone], side.att.mid[zone]);
+      const scorerPool = playersInZone(side.att.fwd, zone).concat(playersInZone(side.att.mid, zone));
+      const scorer = weightedPickFromList(scorerPool);
       const teamLabel = side.att.name;
       const zoneLabel = ZONE_LABEL[zone];
       if (Math.random() < goalChance){
@@ -460,23 +578,26 @@ function simulatePhase(phaseLabel){
       }
     }
     if (Math.random() < 0.14){
-      const zone = ZONES[Math.floor(Math.random()*3)];
-      addLogEvent("chip-card","ЖК", `Жёлтая карточка: <b>${side.def.name}</b>, ${side.def.def[zone].name}.`);
+      const defenders = side.def.def.map(e=>e.player);
+      const culprit = defenders[Math.floor(Math.random()*defenders.length)];
+      addLogEvent("chip-card","ЖК", `Жёлтая карточка: <b>${side.def.name}</b>, ${culprit.name}.`);
     }
   });
 
   updateScoreboard();
 }
 
-function avgZones(fn){ return (fn("left")+fn("center")+fn("right"))/3; }
-
 function updateScoreboard(){
   document.getElementById("scoreboard").innerHTML = `${teamA.name} <b>${state.score.A} : ${state.score.B}</b> ${teamB.name}`;
 }
 
 function swapFlanks(team, line){
-  const l = team[line].left, r = team[line].right;
-  team[line].left = r; team[line].right = l;
+  const arr = team[line];
+  const idxL = arr.findIndex(e=>e.zone==="L");
+  const idxR = arr.findIndex(e=>e.zone==="R");
+  const tmp = arr[idxL].player;
+  arr[idxL].player = arr[idxR].player;
+  arr[idxR].player = tmp;
   renderZones();
   renderSwapPanel();
   renderPitch();
@@ -488,9 +609,12 @@ function renderSwapPanel(){
     const el = document.getElementById("swap-"+key);
     el.innerHTML = "";
     [["def","Оборона"],["mid","Полузащита"],["fwd","Атака"]].forEach(([line,label]) => {
+      const arr = team[line];
+      const L = arr.find(e=>e.zone==="L").player;
+      const R = arr.find(e=>e.zone==="R").player;
       const btn = document.createElement("button");
       btn.className = "swap-btn";
-      btn.innerHTML = `${label}: ${team[line].left.name} <span class="arrow">⇄</span> ${team[line].right.name}`;
+      btn.innerHTML = `${label}: ${L.name} <span class="arrow">⇄</span> ${R.name}`;
       btn.onclick = () => swapFlanks(team, line);
       el.appendChild(btn);
     });
@@ -517,6 +641,7 @@ document.getElementById("btn-play").addEventListener("click", () => {
   }
 });
 
+renderFormationButtons();
 renderTacticButtons();
 renderZones();
 renderMatchupNote();
